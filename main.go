@@ -11,7 +11,7 @@ import (
 
 func main() {
 	db := config.InitDB()
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Buku{})
 
 	// Inisialisasi repository, service, dan controller
 	userRepo := repositories.NewUserRepository(db)               // Mengambil db sebagai parameter untuk mengakses database.

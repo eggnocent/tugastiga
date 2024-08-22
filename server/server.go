@@ -20,5 +20,7 @@ func InitRouter(authController controllers.AuthController, userController contro
 	protected.GET("/users/:id", userController.GetUserByID)
 	protected.PUT("/users/:id", userController.UpdateUser)
 	protected.DELETE("/users/:id", userController.DeleteUser)
+	protected.POST("/users/:id/buku", userController.AddUserBook)
+	protected.GET("/users/:id/buku", userController.GetUserBook)
 	return r
 }

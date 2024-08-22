@@ -10,4 +10,5 @@ type User struct {
 	FullName string `gorm:"not null"`
 	CreateAt time.Time
 	UpdateAt time.Time
+	Buku     *Buku `gorm"foreignKey:UserID"`
 }

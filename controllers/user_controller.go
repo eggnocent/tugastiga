@@ -15,6 +15,8 @@ type UserController interface {
 	GetUserByID(ctx *gin.Context)
 	UpdateUser(ctx *gin.Context)
 	DeleteUser(ctx *gin.Context)
+	AddUserBook(ctx *gin.Context)
+	GetUserBook(ctx *gin.Context)
 }
 
 type userController struct {
@@ -96,4 +98,29 @@ func (c *userController) DeleteUser(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"pesan": "User berhasil dihapus"})
+}
+
+func (c *userController) AddUserBook(ctx *gin.Context) {
+	id := ctx.Param("id")
+	var buku models.Buku
+	if err := ctx.ShouldBindJSON(&buku); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err := c.service.AddBookToUser(id, buku)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "Book added to user"})
+}
+
+func (c *userController) GetUserBook(ctx *gin.Context) {
+	id := ctx.Param("id")
+	buku, err := c.service.GetBookByUserID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Buku tidak ada"})
+		return
+	}
+	ctx.JSON(http.StatusOK, buku)
 }
