@@ -38,22 +38,71 @@ func (c *penulisControllerImpl) CreatePenulis(ctx *gin.Context) {
 }
 
 func (c *penulisControllerImpl) GetAllPenulis(ctx *gin.Context) {
-	penulis, err := c.service.GetAllPenulis()
+	penulisList, err := c.service.GetAllPenulis()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch authors"})
 		return
 	}
-	ctx.JSON(http.StatusOK, penulis)
+
+	// Build the response manually
+	var penulisResponse []map[string]interface{}
+	for _, penulis := range penulisList {
+		var bukuResponse []map[string]interface{}
+		for _, buku := range penulis.Buku {
+			bukuResponse = append(bukuResponse, map[string]interface{}{
+				"ID":        buku.ID,
+				"NamaBuku":  buku.NamaBuku,
+				"TglTerbit": buku.TglTerbit,
+				"IdPenulis": buku.IdPenulis,
+				"Penulis": map[string]interface{}{
+					"ID":           penulis.ID,
+					"NamaPenulis":  penulis.NamaPenulis,
+					"EmailPenulis": penulis.EmailPenulis,
+					"Buku":         nil,
+				},
+				"UserID": buku.UserID,
+				"User":   buku.User.Username,
+			})
+		}
+
+		penulisResponse = append(penulisResponse, map[string]interface{}{
+			"ID":           penulis.ID,
+			"NamaPenulis":  penulis.NamaPenulis,
+			"EmailPenulis": penulis.EmailPenulis,
+			"Buku":         bukuResponse,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, penulisResponse)
 }
 
 func (c *penulisControllerImpl) GetPenulisByID(ctx *gin.Context) {
 	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 32)
 	penulis, err := c.service.GetPenulisByID(uint(id))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "penulis tidak tersedia"})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Penulis not found"})
 		return
 	}
-	ctx.JSON(http.StatusOK, penulis)
+
+	// Building response
+	var books []map[string]interface{}
+	for _, book := range penulis.Buku {
+		books = append(books, map[string]interface{}{
+			"ID":        book.ID,
+			"NamaBuku":  book.NamaBuku,
+			"TglTerbit": book.TglTerbit,
+			"User":      book.User.Username,
+		})
+	}
+
+	response := gin.H{
+		"ID":           penulis.ID,
+		"NamaPenulis":  penulis.NamaPenulis,
+		"EmailPenulis": penulis.EmailPenulis,
+		"Buku":         books,
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *penulisControllerImpl) UpdatePenulis(ctx *gin.Context) {

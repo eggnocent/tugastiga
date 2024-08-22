@@ -23,7 +23,9 @@ func InitRouter(authController controllers.AuthController, userController contro
 
 	// Rute untuk buku
 	protected.POST("/users/:id/buku", bukuController.AddUserBook)
+	protected.GET("/buku", bukuController.GetAllBooks)
 	protected.GET("/users/:id/buku", bukuController.GetUserBook)
+	protected.GET("/buku/:id", bukuController.GetBookByID)
 	protected.PUT("/users/:id/buku", bukuController.UpdateUserBook)
 	protected.DELETE("/users/:id/buku", bukuController.DeleteUserBook)
 

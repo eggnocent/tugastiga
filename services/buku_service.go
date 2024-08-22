@@ -9,6 +9,8 @@ import (
 
 type BookService interface {
 	GetBookByUserID(userID string) (*models.Buku, error)
+	GetBookByID(id uint) (*models.Buku, error)
+	GetAllBooks() ([]models.Buku, error)
 	AddBookToUser(userID string, book models.Buku) error
 	UpdateBook(userID string, book models.Buku) error
 	DeleteBook(userID string) error
@@ -20,6 +22,14 @@ type bookServiceImpl struct {
 
 func NewBookService(repo repositories.BookRepository) BookService {
 	return &bookServiceImpl{repo}
+}
+
+func (s *bookServiceImpl) GetAllBooks() ([]models.Buku, error) {
+	return s.repo.GetAllBooks()
+}
+
+func (s *bookServiceImpl) GetBookByID(id uint) (*models.Buku, error) {
+	return s.repo.GetBookByID(id)
 }
 
 func (s *bookServiceImpl) GetBookByUserID(userID string) (*models.Buku, error) {

@@ -27,13 +27,13 @@ func (r *penulisRepositoryImpl) CreatePenulis(penulis models.Penulis) error {
 
 func (r *penulisRepositoryImpl) GetAllPenulis() ([]models.Penulis, error) {
 	var penulis []models.Penulis
-	err := r.db.Find(&penulis).Error
+	err := r.db.Preload("Buku.User").Preload("Buku.Penulis").Find(&penulis).Error
 	return penulis, err
 }
 
 func (r *penulisRepositoryImpl) GetPenulisByID(id uint) (models.Penulis, error) {
 	var penulis models.Penulis
-	err := r.db.First(&penulis, id).Error
+	err := r.db.Preload("Buku.User").Preload("Buku.Penulis").First(&penulis, id).Error
 	return penulis, err
 }
 
