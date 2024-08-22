@@ -29,5 +29,7 @@ func InitRouter(authController controllers.AuthController, userController contro
 
 	protected.POST("/penulis", penulisController.CreatePenulis)
 	protected.GET("/penulis", penulisController.GetAllPenulis)
+	protected.GET("/penulis/:id", penulisController.GetPenulisByID)
+	protected.PUT("/penulis/:id", penulisController.UpdatePenulis)
 	return r
 }
