@@ -13,8 +13,6 @@ type UserRepository interface {
 	Update(user models.User) error
 	FindByUsername(username string, user *models.User) error
 	Delete(id uint) error
-	AddBookToUser(userID uint, buku models.Buku) error
-	GetBookByUserID(userID uint) (*models.Buku, error)
 }
 
 type userRepository struct {
@@ -47,18 +45,4 @@ func (r *userRepository) FindByUsername(username string, user *models.User) erro
 
 func (r *userRepository) Delete(id uint) error {
 	return r.db.Unscoped().Delete(&models.User{}, id).Error
-}
-
-func (r *userRepository) AddBookToUser(userID uint, buku models.Buku) error {
-	buku.UserID = userID
-	return r.db.Create(&buku).Error
-}
-
-func (r *userRepository) GetBookByUserID(userID uint) (*models.Buku, error) {
-	var buku models.Buku
-	err := r.db.Where("user_id = ?", userID).First(&buku).Error
-	if err != nil {
-		return nil, err
-	}
-	return &buku, nil
 }

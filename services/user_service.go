@@ -13,8 +13,6 @@ type UserService interface {
 	GetUserByID(id string) (models.User, error)
 	UpdateUser(user models.User) error
 	DeleteUser(id string) error
-	AddBookToUser(userID string, buku models.Buku) error
-	GetBookByUserID(userID string) (*models.Buku, error)
 }
 
 type userServiceImpl struct {
@@ -86,20 +84,4 @@ func (s *userServiceImpl) DeleteUser(id string) error {
 		return errors.New("ID tidak ditemukan")
 	}
 	return s.repo.Delete(uint(userID))
-}
-
-func (s *userServiceImpl) AddBookToUser(userID string, buku models.Buku) error {
-	id, err := strconv.ParseUint(userID, 10, 32)
-	if err != nil {
-		return errors.New("Invalid user ID")
-	}
-	return s.repo.AddBookToUser(uint(id), buku)
-}
-
-func (s *userServiceImpl) GetBookByUserID(userID string) (*models.Buku, error) {
-	id, err := strconv.ParseUint(userID, 10, 32)
-	if err != nil {
-		return nil, errors.New("invalid user ID")
-	}
-	return s.repo.GetBookByUserID(uint(id))
 }

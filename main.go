@@ -20,7 +20,11 @@ func main() {
 	authService := services.NewAuthService(userRepo)             // AuthService: Menggunakan UserRepository untuk autentikasi.
 	authController := controllers.NewAuthController(authService) // AuthController: Menggunakan AuthService untuk login/logout.
 
+	bookRepo := repositories.NewBookRepository(db)
+	bookService := services.NewBookService(bookRepo)
+	bukuController := controllers.NewBukuController(bookService)
+
 	// Inisialisasi router dan jalankan server
-	r := server.InitRouter(authController, userController)
-	r.Run() // Menjalankan server pada port default (8080)
+	r := server.InitRouter(authController, userController, bukuController) // Tambahkan bukuController sebagai parameter
+	r.Run()                                                                // Menjalankan server pada port default (8080)
 }
