@@ -28,5 +28,6 @@ func InitRouter(authController controllers.AuthController, userController contro
 	protected.DELETE("/users/:id/buku", bukuController.DeleteUserBook)
 
 	protected.POST("/penulis", penulisController.CreatePenulis)
+	protected.GET("/penulis", penulisController.GetAllPenulis)
 	return r
 }

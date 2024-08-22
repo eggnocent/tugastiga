@@ -10,6 +10,7 @@ import (
 
 type PenulisController interface {
 	CreatePenulis(ctx *gin.Context)
+	GetAllPenulis(ctx *gin.Context)
 }
 
 type penulisControllerImpl struct {
@@ -31,4 +32,13 @@ func (c *penulisControllerImpl) CreatePenulis(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{"pesan": "Penulis berhasil dibuat"})
+}
+
+func (c *penulisControllerImpl) GetAllPenulis(ctx *gin.Context) {
+	penulis, err := c.service.GetAllPenulis()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, penulis)
 }
