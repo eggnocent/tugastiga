@@ -12,6 +12,7 @@ type UserRepository interface {
 	FindByID(id uint, user *models.User) error
 	Update(user models.User) error
 	FindByUsername(username string, user *models.User) error
+	Delete(id uint) error
 }
 
 type userRepository struct {
@@ -40,4 +41,8 @@ func (r *userRepository) Update(user models.User) error {
 
 func (r *userRepository) FindByUsername(username string, user *models.User) error {
 	return r.db.Where("username = ?", username).First(user).Error
+}
+
+func (r *userRepository) Delete(id uint) error {
+	return r.db.Unscoped().Delete(&models.User{}, id).Error
 }

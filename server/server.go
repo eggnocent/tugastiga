@@ -19,5 +19,6 @@ func InitRouter(authController controllers.AuthController, userController contro
 	protected.GET("/users", userController.GetAllUsers)
 	protected.GET("/users/:id", userController.GetUserByID)
 	protected.PUT("/users/:id", userController.UpdateUser)
+	protected.DELETE("/users/:id", userController.DeleteUser)
 	return r
 }

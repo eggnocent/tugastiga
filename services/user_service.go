@@ -12,6 +12,7 @@ type UserService interface {
 	GetAllUsers() ([]models.User, error)
 	GetUserByID(id string) (models.User, error)
 	UpdateUser(user models.User) error
+	DeleteUser(id string) error
 }
 
 type userServiceImpl struct {
@@ -70,4 +71,17 @@ func (s *userServiceImpl) UpdateUser(user models.User) error {
 		user.Password = EncryptedPassword
 	}
 	return s.repo.Update(user)
+}
+
+func (s *userServiceImpl) DeleteUser(id string) error {
+	userID, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		return errors.New("ID tidak valid")
+	}
+	var user models.User
+	err = s.repo.FindByID(uint(userID), &user)
+	if err != nil {
+		return errors.New("ID tidak ditemukan")
+	}
+	return s.repo.Delete(uint(userID))
 }

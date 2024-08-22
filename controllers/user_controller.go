@@ -14,6 +14,7 @@ type UserController interface {
 	GetAllUsers(ctx *gin.Context)
 	GetUserByID(ctx *gin.Context)
 	UpdateUser(ctx *gin.Context)
+	DeleteUser(ctx *gin.Context)
 }
 
 type userController struct {
@@ -85,4 +86,14 @@ func (c *userController) UpdateUser(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"pesan": "User telah di update"})
+}
+
+func (c *userController) DeleteUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	if err := c.service.DeleteUser(id); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"pesan": "User berhasil dihapus"})
 }
