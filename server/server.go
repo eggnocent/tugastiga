@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouter(authController controllers.AuthController, userController controllers.UserController, bukuController controllers.BukuController) *gin.Engine {
+func InitRouter(authController controllers.AuthController, userController controllers.UserController, bukuController controllers.BukuController, penulisController controllers.PenulisController) *gin.Engine {
 	r := gin.Default()
 
 	r.POST("/login", authController.Login)
@@ -27,5 +27,6 @@ func InitRouter(authController controllers.AuthController, userController contro
 	protected.PUT("/users/:id/buku", bukuController.UpdateUserBook)
 	protected.DELETE("/users/:id/buku", bukuController.DeleteUserBook)
 
+	protected.POST("/penulis", penulisController.CreatePenulis)
 	return r
 }

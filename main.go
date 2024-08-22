@@ -7,11 +7,14 @@ import (
 	"apimandiri/repositories"
 	"apimandiri/server"
 	"apimandiri/services"
+	"log"
 )
 
 func main() {
 	db := config.InitDB()
-	db.AutoMigrate(&models.User{}, &models.Buku{})
+	if err := db.AutoMigrate(&models.User{}, &models.Penulis{}, &models.Buku{}); err != nil {
+		log.Fatal("Failed to migrate database: ", err)
+	}
 
 	// Inisialisasi repository, service, dan controller
 	userRepo := repositories.NewUserRepository(db)               // Mengambil db sebagai parameter untuk mengakses database.
@@ -24,7 +27,11 @@ func main() {
 	bookService := services.NewBookService(bookRepo)
 	bukuController := controllers.NewBukuController(bookService)
 
+	penulisRepo := repositories.NewPenulisRepository(db)
+	penulisService := services.NewPenulisService(penulisRepo)
+	penulisController := controllers.NewPenulisController(penulisService)
+
 	// Inisialisasi router dan jalankan server
-	r := server.InitRouter(authController, userController, bukuController) // Tambahkan bukuController sebagai parameter
-	r.Run()                                                                // Menjalankan server pada port default (8080)
+	r := server.InitRouter(authController, userController, bukuController, penulisController) // Tambahkan bukuController sebagai parameter
+	r.Run()                                                                                   // Menjalankan server pada port default (8080)
 }
